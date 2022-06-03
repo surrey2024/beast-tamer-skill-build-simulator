@@ -5,12 +5,12 @@ Currently suitable for TMS V243.
 
 ## Download
 
-Download available at <https://drive.google.com/file/d/1-JxE1pCuNuzvbCIXHEN3c0Nnp46TEbxC/view?usp=sharing>
+Download available at <https://drive.google.com/file/d/1YKNPmMQyQ1g3oiypMEUlGbxyVmWpL77W/view?usp=sharing>
 
 ## Usage
 
-將`幻獸師模擬配點.zip`解壓縮後
+將`beast-tamer-skill-build-simulator.zip`解壓縮後
 
-直接運行`幻獸師模擬配點.exe`即可
+直接運行`skill.exe`即可
 
 詳細使用方式，請參考巴哈文章: <https://forum.gamer.com.tw/C.php?bsn=7650&snA=1018133>
