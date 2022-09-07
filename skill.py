@@ -356,6 +356,7 @@ class Example(QMainWindow):
         self.total_point = [0,0,0,0]
         self.combo1 = QComboBox()
         self.combo2 = QComboBox()
+        self.level = QComboBox()
         self.clear = QComboBox()
         self.remain_point = QLabel("剩餘點數: 593")
         # self.setMouseTracking(True)
@@ -469,7 +470,13 @@ class Example(QMainWindow):
         self.head.addWidget(QLabel("查看全集中守護效果"))
 
         self.head.addStretch(1)
+        self.head.addWidget(QLabel("選擇等級"))
+        for i in range(51):
+            self.level.addItem("{}".format(250-i))
+        self.level.currentTextChanged.connect(self.update_)
+        self.head.addWidget(self.level)
         self.head.addWidget(self.remain_point)
+        self.head.addStretch(1)
         self.clear.addItems(["","重置熊模式","重置豹模式","重置鳥模式","重置貓模式", "重置全部模式"])
         self.head.addWidget(self.clear)
         clear = QPushButton("確定重置")
@@ -528,7 +535,7 @@ class Example(QMainWindow):
             self.mylabels.append(MyLabel(img[i], i, self.skill_box))
 
         self.setGeometry(100, 60, 1000, 940)
-        self.setWindowTitle('幻獸師模擬配點 v3.1 作者:棉花糖')
+        self.setWindowTitle('幻獸師模擬配點 v4.0 作者:棉花糖')
         # self.show()
 
     def resizeEvent(self, event):
@@ -629,7 +636,7 @@ class Example(QMainWindow):
             self.used_point[i] = used
             self.total_point[i] = total
             self.point_label[i].setText("投入點數: {}，實際點數: {}".format(used, total))
-        remain = 593-self.used_point[0]-self.used_point[1]-self.used_point[2]-self.used_point[3]
+        remain = 593+(int(self.level.currentText())-200)*3-self.used_point[0]-self.used_point[1]-self.used_point[2]-self.used_point[3]
         if remain < 0:
             self.remain_point.setStyleSheet("QLabel"
                                     "{"
@@ -678,22 +685,24 @@ class Example(QMainWindow):
                     for j in range(18):
                         f.write("{}\n".format(self.spinbox[i*18+j].value()))
                 f.write("{}\n".format(self.combo2.currentText()[8:]))
+                f.write("{}\n".format(self.level.currentText()))
         except Exception:
             pass
 
     def read_data(self):
         try:
             fileName, filetype = QFileDialog.getOpenFileName(self,"選擇檔案","./","ccdy (*.ccdy)")
-            self.setWindowTitle(f'幻獸師模擬配點 v3.1 作者:棉花糖 讀取檔案: {fileName}')
+            self.setWindowTitle(f'幻獸師模擬配點 v4.0 作者:棉花糖 讀取檔案: {fileName}')
             with open(fileName, "r") as f:
                 self.combo1.setCurrentText("所有技能等級加 "+f.readline()[:-1])
                 for i in range(4):
                     for j in range(18):
                         self.spinbox[i*18+j].setValue(int(f.readline()))
                 self.combo2.setCurrentText("被動技能等級加 "+f.readline()[:-1])
+                self.level.setCurrentText(f.readline()[:-1])
         except Exception:
             pass
-
+    
     def gen_image(self):
         try:
             fileName, filetype = QFileDialog.getSaveFileName(self,"另存新檔","./","jpg (*.jpg)")
@@ -750,6 +759,11 @@ class Example(QMainWindow):
             text = f"Passive Level +{p_add}"
             cv2.putText(img, text, (35, 27), cv2.FONT_HERSHEY_DUPLEX,
                                             0.4, (205, 55, 105), 1, cv2.LINE_AA)
+
+            level = int(self.level.currentText())
+            text = f"LV: {level}"
+            cv2.putText(img, text, (137, 10), cv2.FONT_HERSHEY_SIMPLEX,
+                                            0.3, (5, 5, 5), 1, cv2.LINE_AA)
             
             img[32*18+10:32*18+29, :91*2, :] = color[0]
             img[32*18+10:32*18+29, 91*2:, :] = color[3]
